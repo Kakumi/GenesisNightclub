@@ -10,8 +10,10 @@ namespace GenesisNightclub.Domain.DTOs
 {
     public class MemberCardDTO
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Key]
         public int Id { get; set; }
+
+        public List<MemberDTO> Members { get; set; }
     }
 }

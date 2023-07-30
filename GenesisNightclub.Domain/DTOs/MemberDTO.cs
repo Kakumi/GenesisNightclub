@@ -17,9 +17,8 @@ namespace GenesisNightclub.Domain.DTOs
         public string? Contact { get; set; }
         public DateTime? EndBlacklisted { get; set; }
 
-        public int IdentityCardId { get; set; }
+        public int IdentityCardNumber { get; set; }
         public IdentityCardDTO? IdentityCard { get; set; }
-
         public int MemberCardId { get; set; }
         public MemberCardDTO? MemberCard { get; set; }
     }

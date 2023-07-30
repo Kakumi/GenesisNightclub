@@ -21,11 +21,10 @@ namespace GenesisNightclub.Repository.Repositories
                     Id = 1,
                     Contact = "test@email.com",
                     EndBlacklisted = null,
-                    IdentityCardId = 1,
+                    //IdentityCardId = 1,
                     IdentityCard = new IdentityCardDTO()
                     {
-                        Id = 1,
-                        CardNumber = 1,
+                        Number = 1,
                         Lastname = "Brebion",
                         Firstname = "Damien",
                         Birthdate = DateTime.Now,
@@ -33,7 +32,7 @@ namespace GenesisNightclub.Repository.Repositories
                         ValidFrom = DateTime.Now,
                         ValidTo = DateTime.Now
                     },
-                    MemberCardId = 1,
+                    //MemberCardId = 1,
                     MemberCard = new MemberCardDTO()
                     {
                         Id = 1

@@ -12,8 +12,8 @@ namespace GenesisNightclub.Repository.Contexts
     public class NightclubContext : DbContext
     {
         public NightclubContext(DbContextOptions<NightclubContext> options) : base(options)
-        { 
-            
+        {
+
         }
 
         public DbSet<MemberDTO> Members { get; set; }

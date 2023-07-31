@@ -10,12 +10,14 @@ using Microsoft.Extensions.Configuration;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-//builder.Services.Configure<FOO>(builder.Configuration.GetSection("FOO"));
+//builder.Services.AddSingleton<IMemberRepository, InMemoryMemberRepository>();
 builder.Services.AddScoped<IMemberRepository, SqlMemberRepository>();
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddAutoMapper(typeof(MemberProfile));
 builder.Services.AddDbContext<NightclubContext>(options =>
 {
+    //options.EnableSensitiveDataLogging(true);
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
     options.UseSqlServer(builder.Configuration.GetConnectionString("MSSQLServerConnection"));
 });
 

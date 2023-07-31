@@ -2,6 +2,7 @@ using GenesisNightclub.Domain.Models;
 using GenesisNightclub.Repository.Interfaces;
 using GenesisNightclub.Web.Forms;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace GenesisNightclub.Web.Controllers
 {
@@ -27,7 +28,12 @@ namespace GenesisNightclub.Web.Controllers
 
                 var members = await _memberService.GetMembers();
                 return Ok(members);
-            } catch(Exception ex)
+            }
+            catch (ValidationException vex)
+            {
+                return BadRequest(vex.Message);
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
 
@@ -36,7 +42,7 @@ namespace GenesisNightclub.Web.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUser(int id)
+        public async Task<IActionResult> GetMember(int id)
         {
             try
             {
@@ -50,6 +56,10 @@ namespace GenesisNightclub.Web.Controllers
 
                 return Ok(member);
             }
+            catch (ValidationException vex)
+            {
+                return BadRequest(vex.Message);
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
@@ -58,23 +68,29 @@ namespace GenesisNightclub.Web.Controllers
             }
         }
 
-        //[HttpGet(Name = "IsBlacklisted")]
-        //public async Task<IActionResult> IsUserBlacklisted()
-        //{
-        //    try
-        //    {
-        //        throw new NotImplementedException();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, ex.Message);
+        [HttpGet("blacklisted/{id}")]
+        public async Task<IActionResult> IsMemberBlacklisted(int id)
+        {
+            try
+            {
+                var member = await _memberService.GetMember(id);
+                if (member == null)
+                {
+                    return NotFound();
+                }
 
-        //        return StatusCode(500);
-        //    }
-        //}
+                return Ok(member.IsBlacklisted());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return StatusCode(500);
+            }
+        }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterForm registerForm)
+        public async Task<IActionResult> Register([FromBody] RegisterMemberForm registerForm)
         {
             try
             {
@@ -83,7 +99,31 @@ namespace GenesisNightclub.Web.Controllers
                     return BadRequest("Invalid body");
                 }
 
-                throw new NotImplementedException();
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var identityCard = new IdentityCard(
+                    registerForm.IdentityCard!.Number,
+                    registerForm.IdentityCard.Lastname,
+                    registerForm.IdentityCard.Firstname,
+                    registerForm.IdentityCard.Birthdate!.Value,
+                    registerForm.IdentityCard.NationalNumber,
+                    registerForm.IdentityCard.ValidFrom!.Value,
+                    registerForm.IdentityCard.ValidTo!.Value);
+
+                var memberCard = new MemberCard(registerForm.MemberCard!.Id);
+
+                var member = new Member(identityCard, memberCard, registerForm.Contact!);
+
+                await _memberService.RegisterMember(member);
+
+                return CreatedAtAction(nameof(Register), member);
+            }
+            catch (ValidationException vex)
+            {
+                return BadRequest(vex.Message);
             }
             catch (Exception ex)
             {
@@ -93,34 +133,46 @@ namespace GenesisNightclub.Web.Controllers
             }
         }
 
-        //[HttpPatch(Name = "Update")]
-        //public async Task<IActionResult> Update()
-        //{
-        //    try
-        //    {
-        //        throw new NotImplementedException();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, ex.Message);
+        [HttpPatch("update/{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateMemberForm updateMemberForm)
+        {
+            try
+            {
+                if (updateMemberForm == null)
+                {
+                    return BadRequest("Invalid body");
+                }
 
-        //        return StatusCode(500);
-        //    }
-        //}
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
 
-        //[HttpPatch(Name = "Blacklisted")]
-        //public async Task<IActionResult> Blacklisted()
-        //{
-        //    try
-        //    {
-        //        throw new NotImplementedException();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, ex.Message);
+                var member = await _memberService.GetMember(id);
+                if (member == null)
+                {
+                    return NotFound();
+                }
 
-        //        return StatusCode(500);
-        //    }
-        //}
+                member.Contact = updateMemberForm.Contact ?? member.Contact;
+                member.EndBlacklisted = updateMemberForm.EndBlacklisted;
+                member.IdentityCard.Lastname = updateMemberForm.Lastname ?? member.IdentityCard.Lastname;
+                member.IdentityCard.Firstname = updateMemberForm.Firstname ?? member.IdentityCard.Firstname;
+
+                await _memberService.UpdateMember(member);
+
+                return NoContent();
+            }
+            catch (ValidationException vex)
+            {
+                return BadRequest(vex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return StatusCode(500);
+            }
+        }
     }
 }

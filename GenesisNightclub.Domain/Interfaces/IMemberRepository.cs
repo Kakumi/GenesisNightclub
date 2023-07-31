@@ -13,6 +13,7 @@ namespace GenesisNightclub.Domain.Interfaces
         Task<MemberDTO?> GetMember(int id);
         Task<MemberDTO?> GetMember(string nationalNumber);
         Task<List<MemberDTO>> GetMembers();
+        Task<List<MemberDTO>> GetMembers(int memberCardId);
         Task RegisterMember(MemberDTO member);
         Task UpdateMember(MemberDTO member);
         Task DeleteMember(MemberDTO member);

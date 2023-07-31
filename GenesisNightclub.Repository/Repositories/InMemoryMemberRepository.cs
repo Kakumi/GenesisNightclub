@@ -21,7 +21,7 @@ namespace GenesisNightclub.Repository.Repositories
                     Id = 1,
                     Contact = "test@email.com",
                     EndBlacklisted = null,
-                    //IdentityCardId = 1,
+                    IdentityCardNumber = 1,
                     IdentityCard = new IdentityCardDTO()
                     {
                         Number = 1,
@@ -32,18 +32,13 @@ namespace GenesisNightclub.Repository.Repositories
                         ValidFrom = DateTime.Now,
                         ValidTo = DateTime.Now
                     },
-                    //MemberCardId = 1,
+                    MemberCardId = 1,
                     MemberCard = new MemberCardDTO()
                     {
                         Id = 1
                     }
                 }
             };
-        }
-
-        public Task DeleteMember(MemberDTO member)
-        {
-            return Task.FromResult(_members.Remove(member));
         }
 
         public Task<MemberDTO?> GetMember(int id)
@@ -61,6 +56,11 @@ namespace GenesisNightclub.Repository.Repositories
             return Task.FromResult(_members);
         }
 
+        public Task<List<MemberDTO>> GetMembers(int memberCardId)
+        {
+            return Task.FromResult(_members.Where(x => x.MemberCard != null && x.MemberCard.Id == memberCardId).ToList());
+        }
+
         public Task RegisterMember(MemberDTO member)
         {
             _members.Add(member);
@@ -75,6 +75,11 @@ namespace GenesisNightclub.Repository.Repositories
             RegisterMember(member);
 
             return Task.CompletedTask;
+        }
+
+        public Task DeleteMember(MemberDTO member)
+        {
+            return Task.FromResult(_members.Remove(member));
         }
     }
 }

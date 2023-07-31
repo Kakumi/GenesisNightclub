@@ -20,11 +20,6 @@ namespace GenesisNightclub.Repository.Repositories
             _context.Database.EnsureCreated();
         }
 
-        public Task DeleteMember(MemberDTO member)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<MemberDTO?> GetMember(int id)
         {
             return await _context.Members
@@ -38,7 +33,7 @@ namespace GenesisNightclub.Repository.Repositories
             return await _context.Members
                 .Include(x => x.IdentityCard)
                 .Include(x => x.MemberCard)
-                .FirstOrDefaultAsync(x => x.IdentityCard.NationalNumber == nationalNumber);
+                .FirstOrDefaultAsync(x => x.IdentityCard != null && x.IdentityCard.NationalNumber == nationalNumber);
         }
 
         public async Task<List<MemberDTO>> GetMembers()
@@ -49,14 +44,31 @@ namespace GenesisNightclub.Repository.Repositories
                 .ToListAsync();
         }
 
-        public Task RegisterMember(MemberDTO member)
+        public async Task<List<MemberDTO>> GetMembers(int memberCardId)
         {
-            throw new NotImplementedException();
+            return await _context.Members
+                .Include(x => x.IdentityCard)
+                .Include(x => x.MemberCard)
+                .Where(x => x.MemberCard != null && x.MemberCard.Id == memberCardId)
+                .ToListAsync();
         }
 
-        public Task UpdateMember(MemberDTO member)
+        public async Task RegisterMember(MemberDTO member)
         {
-            throw new NotImplementedException();
+            _context.Members.Add(member);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateMember(MemberDTO member)
+        {
+            _context.Members.Update(member);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteMember(MemberDTO member)
+        {
+            _context.Members.Remove(member);
+            await _context.SaveChangesAsync();
         }
     }
 }

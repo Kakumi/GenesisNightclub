@@ -10,5 +10,12 @@ namespace GenesisNightclub.Domain.Models
     public class MemberCard
     {
         public int Id { get; set; }
+
+        public MemberCard(int id)
+        {
+            Id = id;
+        }
+
+        internal MemberCard() { }
     }
 }

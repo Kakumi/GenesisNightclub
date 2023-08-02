@@ -79,7 +79,13 @@ namespace GenesisNightclub.Repository.Repositories
 
         public Task DeleteMember(MemberDTO member)
         {
-            return Task.FromResult(_members.Remove(member));
+            var memberFound = _members.FirstOrDefault(x => x.Id == member.Id);
+            if (memberFound != null)
+            {
+                return Task.FromResult(_members.Remove(memberFound));
+            }
+
+            return Task.CompletedTask;
         }
     }
 }

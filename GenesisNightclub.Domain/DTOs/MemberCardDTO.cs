@@ -14,6 +14,6 @@ namespace GenesisNightclub.Domain.DTOs
         [Key]
         public int Id { get; set; }
 
-        public List<MemberDTO> Members { get; set; }
+        public ICollection<MemberDTO> Members { get; set; }
     }
 }

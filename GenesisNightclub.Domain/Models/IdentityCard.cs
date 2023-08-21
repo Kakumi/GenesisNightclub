@@ -20,7 +20,7 @@ namespace GenesisNightclub.Domain.Models
         public DateTime ValidFrom { get; set; }
         public DateTime ValidTo { get; set; }
 
-        public IdentityCard(int number, string lastname, string firstname, DateTime birthdate, string nationalNumber, DateTime validFrom, DateTime validTo)
+        private IdentityCard(int number, string lastname, string firstname, DateTime birthdate, string nationalNumber, DateTime validFrom, DateTime validTo)
         {
             Number = number;
             Lastname = lastname;
@@ -32,6 +32,29 @@ namespace GenesisNightclub.Domain.Models
         }
 
         internal IdentityCard() { }
+
+        public static IdentityCard Create(int number, string lastname, string firstname, DateTime birthdate, string nationalNumber, DateTime validFrom, DateTime validTo)
+        {
+            var identityCard = new IdentityCard(number, lastname, firstname, birthdate, nationalNumber, validFrom, validTo);
+
+            if (!identityCard.IsValidNationNumber())
+            {
+                throw new ValidationException("National number is invalid");
+            }
+
+
+            if (identityCard!.ValidTo <= identityCard.ValidFrom)
+            {
+                throw new ValidationException("The date from Identity Card ValidTo must be after ValidFrom");
+            }
+
+            if (identityCard.ValidTo <= DateTime.Now)
+            {
+                throw new ValidationException("The identity card is not valid anymore (expiration)");
+            }
+
+            return identityCard;
+        }
 
         public bool IsAdult()
         {

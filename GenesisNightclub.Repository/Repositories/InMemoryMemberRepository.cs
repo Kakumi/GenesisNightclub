@@ -1,5 +1,5 @@
 ﻿using GenesisNightclub.Domain.DTOs;
-using GenesisNightclub.Domain.Interfaces;
+using GenesisNightclub.Application.Interfaces;
 using GenesisNightclub.Domain.Models;
 using System;
 using System.Collections.Generic;

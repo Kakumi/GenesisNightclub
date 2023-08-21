@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using AutoMapper.Execution;
 
 namespace GenesisNightclub.Domain.Models
 {
@@ -15,11 +16,10 @@ namespace GenesisNightclub.Domain.Models
         public int Id { get; set; }
         public IdentityCard IdentityCard { get; set; }
         public MemberCard MemberCard { get; set; }
-        [JsonIgnore] //Ignored by the api response because it's a private field information
         public string Contact { get; set; }
         public DateTime? EndBlacklisted { get; set; }
 
-        public Member(IdentityCard identityCard, MemberCard memberCard, string contact)
+        private Member(IdentityCard identityCard, MemberCard memberCard, string contact)
         {
             IdentityCard = identityCard;
             MemberCard = memberCard;
@@ -30,6 +30,37 @@ namespace GenesisNightclub.Domain.Models
         internal Member()
         {
 
+        }
+
+        public static Member Create(IdentityCard identityCard, MemberCard memberCard, string contact)
+        {
+            var member = new Member(identityCard, memberCard, contact);
+            if (!member.IsValidContact())
+            {
+                throw new ValidationException("Contact detail is not a phone number or an email");
+            }
+
+            if (!member.IdentityCard.IsValidNationNumber())
+            {
+                throw new ValidationException("National number is invalid");
+            }
+
+            if (!member.IdentityCard.IsAdult())
+            {
+                throw new ValidationException("Age is invalid (not an adult)");
+            }
+
+            if (member.IdentityCard!.ValidTo <= member.IdentityCard.ValidFrom)
+            {
+                throw new ValidationException("The date from Identity Card ValidTo must be after ValidFrom");
+            }
+
+            if (member.IdentityCard.ValidTo <= DateTime.Now)
+            {
+                throw new ValidationException("The identity card is not valid anymore (expiration)");
+            }
+
+            return member;
         }
 
         public bool IsBlacklisted()

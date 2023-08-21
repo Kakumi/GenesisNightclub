@@ -11,11 +11,16 @@ namespace GenesisNightclub.Domain.Models
     {
         public int Id { get; set; }
 
-        public MemberCard(int id)
+        private MemberCard(int id)
         {
             Id = id;
         }
 
         internal MemberCard() { }
+
+        public static MemberCard Create(int id)
+        {
+            return new MemberCard(id);
+        }
     }
 }

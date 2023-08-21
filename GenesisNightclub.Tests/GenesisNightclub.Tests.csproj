@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.9" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
     <PackageReference Include="Moq" Version="4.18.4" />
@@ -20,8 +21,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GenesisNightclub.Domain\GenesisNightclub.Domain.csproj" />
-    <ProjectReference Include="..\GenesisNightclub.Repository\GenesisNightclub.Repository.csproj" />
-    <ProjectReference Include="..\GenesisNightclub.Service\GenesisNightclub.Service.csproj" />
+    <ProjectReference Include="..\GenesisNightclub.Repository\GenesisNightclub.Infrastucture.csproj" />
+    <ProjectReference Include="..\GenesisNightclub.Service\GenesisNightclub.Application.csproj" />
     <ProjectReference Include="..\GenesisNightclub.Web\GenesisNightclub.Web.csproj" />
   </ItemGroup>
 

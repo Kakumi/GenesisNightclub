@@ -7,11 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenesisNightclub.Web", "Gen
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenesisNightclub.Domain", "GenesisNightclub.Domain\GenesisNightclub.Domain.csproj", "{F9D6E58B-083F-4D9E-81E0-23E20BF07D42}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenesisNightclub.Repository", "GenesisNightclub.Repository\GenesisNightclub.Repository.csproj", "{5979E995-DA3C-4189-B965-55B921B08E15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenesisNightclub.Infrastucture", "GenesisNightclub.Repository\GenesisNightclub.Infrastucture.csproj", "{5979E995-DA3C-4189-B965-55B921B08E15}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenesisNightclub.Service", "GenesisNightclub.Service\GenesisNightclub.Service.csproj", "{B8B0483D-DF3E-4EB8-A328-5232A497B558}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenesisNightclub.Application", "GenesisNightclub.Service\GenesisNightclub.Application.csproj", "{B8B0483D-DF3E-4EB8-A328-5232A497B558}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenesisNightclub.Tests", "GenesisNightclub.Tests\GenesisNightclub.Tests.csproj", "{ACF59115-2CB2-42F2-AED9-C3521E8FF9D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenesisNightclub.Tests", "GenesisNightclub.Tests\GenesisNightclub.Tests.csproj", "{ACF59115-2CB2-42F2-AED9-C3521E8FF9D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

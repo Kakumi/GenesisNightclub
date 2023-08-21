@@ -1,8 +1,10 @@
+using GenesisNightclub.Application.Member.Commands.RegisterMember;
+using GenesisNightclub.Domain.Exceptions;
+using GenesisNightclub.Domain.Interfaces;
 using GenesisNightclub.Domain.Models;
-using GenesisNightclub.Repository.Interfaces;
+using GenesisNightclub.Domain.Shared;
 using GenesisNightclub.Web.Forms;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 
 namespace GenesisNightclub.Web.Controllers
 {
@@ -60,6 +62,10 @@ namespace GenesisNightclub.Web.Controllers
             {
                 return BadRequest(vex.Message);
             }
+            catch (NotFoundException nfex)
+            {
+                return NotFound(nfex.Message);
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
@@ -85,6 +91,10 @@ namespace GenesisNightclub.Web.Controllers
             {
                 return BadRequest(vex.Message);
             }
+            catch (NotFoundException nfex)
+            {
+                return NotFound(nfex.Message);
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
@@ -108,26 +118,30 @@ namespace GenesisNightclub.Web.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var identityCard = new IdentityCard(
+                var result = await _memberService.RegisterMember(registerForm.Contact!,
                     registerForm.IdentityCard!.Number,
                     registerForm.IdentityCard.Lastname,
                     registerForm.IdentityCard.Firstname,
                     registerForm.IdentityCard.Birthdate!.Value,
                     registerForm.IdentityCard.NationalNumber,
                     registerForm.IdentityCard.ValidFrom!.Value,
-                    registerForm.IdentityCard.ValidTo!.Value);
+                    registerForm.IdentityCard.ValidTo!.Value,
+                    registerForm.MemberCard!.Id);
 
-                var memberCard = new MemberCard(registerForm.MemberCard!.Id);
+                if (result.IsSuccess)
+                {
+                    return Created(nameof(Register), null);
+                }
 
-                var member = new Member(identityCard, memberCard, registerForm.Contact!);
-
-                await _memberService.RegisterMember(member);
-
-                return CreatedAtAction(nameof(Register), member);
+                return BadRequest();
             }
             catch (ValidationException vex)
             {
                 return BadRequest(vex.Message);
+            }
+            catch (NotFoundException nfex)
+            {
+                return NotFound(nfex.Message);
             }
             catch (Exception ex)
             {
@@ -152,24 +166,26 @@ namespace GenesisNightclub.Web.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var member = await _memberService.GetMember(id);
-                if (member == null)
+                var response = await _memberService.UpdateMember(id,
+                    updateMemberForm.Contact,
+                    updateMemberForm.EndBlacklisted,
+                    updateMemberForm.Firstname,
+                    updateMemberForm.Lastname);
+
+                if (response.IsSuccess)
                 {
-                    return NotFound();
+                    return NoContent();
                 }
 
-                member.Contact = updateMemberForm.Contact ?? member.Contact;
-                member.EndBlacklisted = updateMemberForm.EndBlacklisted;
-                member.IdentityCard.Lastname = updateMemberForm.Lastname ?? member.IdentityCard.Lastname;
-                member.IdentityCard.Firstname = updateMemberForm.Firstname ?? member.IdentityCard.Firstname;
-
-                await _memberService.UpdateMember(member);
-
-                return NoContent();
+                return BadRequest();
             }
             catch (ValidationException vex)
             {
                 return BadRequest(vex.Message);
+            }
+            catch (NotFoundException nfex)
+            {
+                return NotFound(nfex.Message);
             }
             catch (Exception ex)
             {

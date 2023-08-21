@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GenesisNightclub.Domain.Interfaces
+namespace GenesisNightclub.Application.Interfaces
 {
     public interface IMemberRepository
     {

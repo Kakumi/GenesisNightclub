@@ -1,5 +1,5 @@
 ﻿using GenesisNightclub.Domain.DTOs;
-using GenesisNightclub.Domain.Interfaces;
+using GenesisNightclub.Application.Interfaces;
 using GenesisNightclub.Repository.Contexts;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -53,22 +53,22 @@ namespace GenesisNightclub.Repository.Repositories
                 .ToListAsync();
         }
 
-        public async Task RegisterMember(MemberDTO member)
+        public Task RegisterMember(MemberDTO member)
         {
             _context.Members.Add(member);
-            await _context.SaveChangesAsync();
+            return Task.CompletedTask;
         }
 
-        public async Task UpdateMember(MemberDTO member)
+        public Task UpdateMember(MemberDTO member)
         {
             _context.Members.Update(member);
-            await _context.SaveChangesAsync();
+            return Task.CompletedTask;
         }
 
-        public async Task DeleteMember(MemberDTO member)
+        public Task DeleteMember(MemberDTO member)
         {
             _context.Members.Remove(member);
-            await _context.SaveChangesAsync();
+            return Task.CompletedTask;
         }
     }
 }

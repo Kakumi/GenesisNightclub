@@ -1,17 +1,22 @@
+using GenesisNightclub.Application.Interfaces;
 using GenesisNightclub.Domain.Interfaces;
 using GenesisNightclub.Domain.Mappers;
+using GenesisNightclub.Infrastucture.UnitOfWork;
 using GenesisNightclub.Repository.Contexts;
-using GenesisNightclub.Repository.Interfaces;
 using GenesisNightclub.Repository.Repositories;
 using GenesisNightclub.Service.Services;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddMediatR(typeof(GenesisNightclub.Application.Interfaces.ICommand).Assembly);
 //builder.Services.AddSingleton<IMemberRepository, InMemoryMemberRepository>();
+//builder.Services.AddSingleton<IUnitOfWork, InMemoryUnitOfWork>();
 builder.Services.AddScoped<IMemberRepository, SqlMemberRepository>();
+builder.Services.AddScoped<IUnitOfWork, SqlUnitOfWork>();
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddAutoMapper(typeof(MemberProfile));
 builder.Services.AddDbContext<NightclubContext>(options =>
